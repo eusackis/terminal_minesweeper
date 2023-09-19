@@ -1,0 +1,9 @@
+Terminal Minesweeper
+
+Here are going to be the notes trying to outline the things I need to code or figure out, before I build towards a functional Minesweeper game.
+
+-Create a grid, possibly a grid with numbers by letters axes (for the sake keeping it simple, no modifying options yet, as far as size or the amount of mines go)
+-Create a random mine generator for the grid
+-Create a number generator that will create the numbers for the surrounding mines
+-Create a corresponding covered grid, that will "open" the grid fields
+-SPICY: Create a logic that when opening an empty grid field it would open all the empty fields and stop at the number.
