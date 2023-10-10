@@ -6,4 +6,10 @@ Here are going to be the notes trying to outline the things I need to code or fi
 -Create a random mine generator for the grid
 -Create a number generator that will create the numbers for the surrounding mines
 -Create a corresponding covered grid, that will "open" the grid fields
+-Create a function that will uncover or flag a selected field:
+  1) Have it take only legit coordinates
+  2) Add the ability to Uncover or flag
+  3) You can make 1 mistake (2 and you're out)
+  4) Perhaps add a logic that if all numbers are uncovered, you win and don't have to flag the last mine(s)
+
 -SPICY: Create a logic that when opening an empty grid field it would open all the empty fields and stop at the number.

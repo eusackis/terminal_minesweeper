@@ -1,16 +1,20 @@
 import random
 
 # creating a grid creating functoinm because will use it again maybe
+
+columns = "ABCDEFGHIJ"
+rows = range(10)
+
 def create_grid():
   empty_dict = {}
-  for i in range(10):
+  for i in rows:
     empty_dict[i] = ['_' for j in range(10)]
   return empty_dict
   
 original_grid = create_grid()
 
 def print_grid(grid):
-  print("X", [char for char in "ABCDEFGHIJ"])
+  print("X", [char for char in columns])
   print("----------------------------------------------------")
   for key, value in grid.items():
     print(key, value)
@@ -57,3 +61,45 @@ print_grid(original_grid)
 covered_grid = create_grid()
 
 print_grid(covered_grid)
+
+
+def uncover_tile():
+  global mistakes
+  player_input = input('Enter field coordinates: ').upper()
+  tile_data = player_input.split()
+
+  # checking if a valid entry is submitted at all
+  while tile_data[0] not in columns or int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F'] or len(tile_data) != 3:
+    print(tile_data)
+    print("You haven't entered a valid grid coordinate with a valid action")
+    player_input = input('try again: ').upper()
+    tile_data = player_input.split()
+
+  # so that reentering a already detonated mine, does not result in a game over:
+
+  char_idx = columns.find(tile_data[0])
+  row_key = int(tile_data[1])
+  action = tile_data[2]
+
+  if original_grid[row_key][char_idx] == 'X' and action == 'U':
+    mistakes.append((row_key, char_idx))
+    if len(mistakes) == 1:
+      print(":(\nWhoops! Seems like you made a mistake, I'll let this one slide, but one more and you are out!\n")
+    covered_grid[row_key][char_idx] = 'B'
+    
+  elif action == 'F':
+    covered_grid[row_key][char_idx] = action
+  else:
+    covered_grid[row_key][char_idx] = original_grid[row_key][char_idx]
+
+  print_grid(covered_grid)
+
+mistakes = []
+
+print('To play enter the tile coordinates with the column + row combo in that order, for example - B 7 U')
+
+while len(mistakes) < 2:
+  uncover_tile()
+  print(f"the amount of mistakes: {mistakes}")
+  
+    
