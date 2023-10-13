@@ -68,11 +68,15 @@ def uncover_tile():
   player_input = input('Enter field coordinates: ').upper()
   tile_data = player_input.split()
 
-  # checking if a valid entry is submitted at all
-  while tile_data[0] not in columns or int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F'] or len(tile_data) != 3:
+  # checking if a valid entry is submitted at all, 
+  # also note-to-self - the order of conditions matters: first if there is the right amount of split variables, then each element (with the second being checked whether it's a digit to begin with before being made into an int, and lastly whether it's been added to 1 mistake list)
+  while len(tile_data) != 3 or tile_data[0] not in columns or tile_data[1].isdigit() and int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F'] or (tile_data[0], int(tile_data[1])) in mistakes:
     print(tile_data)
-    print("You haven't entered a valid grid coordinate with a valid action")
-    player_input = input('try again: ').upper()
+    if (tile_data[0], int(tile_data[1])) in mistakes:
+      print("Looks like you are trying to step on a detonated mine, one leg per one mine. Company policy.")
+    else:
+      print("You haven't entered a valid grid coordinate with a valid action")
+    player_input = input('Try again: ').upper()
     tile_data = player_input.split()
 
   # so that reentering a already detonated mine, does not result in a game over:
@@ -82,9 +86,9 @@ def uncover_tile():
   action = tile_data[2]
 
   if original_grid[row_key][char_idx] == 'X' and action == 'U':
-    mistakes.append((row_key, char_idx))
+    mistakes.append((tile_data[0], row_key)) # changed the char_idx back to tile_data[0], for the sake of consistency, although really weighing the benefits of the letters x numbers aesthetic at this point
     if len(mistakes) == 1:
-      print(":(\nWhoops! Seems like you made a mistake, I'll let this one slide, but one more and you are out!\n")
+      print("\nKABLAMO! You are on your last leg. Literally!\n")
     covered_grid[row_key][char_idx] = 'B'
     
   elif action == 'F':
