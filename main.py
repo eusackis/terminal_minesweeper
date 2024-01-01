@@ -5,15 +5,15 @@ import random
 columns = "ABCDEFGHIJ"
 rows = range(10)
 
-def create_grid():
-  empty_dict = {}
+def create_empty_grid():
+  empty_dict = {} # could have made maybe an list of lists, since the keys are pretty much index numbers, but no real reason to change it now
   for i in rows:
     empty_dict[i] = ['_' for j in range(10)]
   return empty_dict
   
-original_grid = create_grid()
+original_grid = create_empty_grid()
 
-def print_grid(grid):
+def print_grid(grid: dict):
   print("X", [char for char in columns])
   print("----------------------------------------------------")
   for key, value in grid.items():
@@ -24,7 +24,7 @@ def print_grid(grid):
 print_grid(original_grid)
 # The average percentage of mines on the board averages about to 0.12-0.2 %, the percentage increasing as the board gets bigger so probably for 10x10 board 13 would be ok
 
-mines = random.sample(range(100),13)
+mines = random.sample(range(100),13) # 
 # while len(mines) < 13:
   # x = random.randint(1,100)
   # if x not in mines:
@@ -58,7 +58,7 @@ for key, value in original_grid.items():
           
 print_grid(original_grid)
 
-covered_grid = create_grid()
+covered_grid = create_empty_grid()
 
 print_grid(covered_grid)
 
@@ -68,8 +68,8 @@ def uncover_tile():
   player_input = input('Enter field coordinates: ').upper()
   tile_data = player_input.split()
 
-  # checking if a valid entry is submitted at all
-  while tile_data[0] not in columns or int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F'] or len(tile_data) != 3:
+  # checking if a valid entry is submitted at all: tile_data should have 3 items, 1st a letter A - J, 2nd an int and 0-9, 3rd either U or F
+  while len(tile_data) != 3 or tile_data[0] not in columns or tile_data[1].isdigit() and int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F']:
     print(tile_data)
     print("You haven't entered a valid grid coordinate with a valid action")
     player_input = input('try again: ').upper()
@@ -86,7 +86,9 @@ def uncover_tile():
     if len(mistakes) == 1:
       print(":(\nWhoops! Seems like you made a mistake, I'll let this one slide, but one more and you are out!\n")
     covered_grid[row_key][char_idx] = 'B'
-    
+  
+  elif original_grid[row_key][char_idx] == '_':
+    pass
   elif action == 'F':
     covered_grid[row_key][char_idx] = action
   else:

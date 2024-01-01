@@ -13,3 +13,6 @@ Here are going to be the notes trying to outline the things I need to code or fi
   4) Perhaps add a logic that if all numbers are uncovered, you win and don't have to flag the last mine(s)
 
 -SPICY: Create a logic that when opening an empty grid field it would open all the empty fields and stop at the number.
+  1) essentially if you hit "_", you should check all fields around you and look for other "_", whilst uncovering all the number fields
+  2) would be smart (perhaps) IF the logic could remember which tiles were checked (or at least the "_" ones), so it does not loop through already uncovered fields OR not 
+  get stuck going back and forth between the "_" tiles
