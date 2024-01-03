@@ -40,20 +40,20 @@ for mine in mines:
 
 print_grid(original_grid)
 
-for key, value in original_grid.items():
-  for idx in range(len(value)):
+for row_num, row_items in original_grid.items():
+  for idx in range(len(row_items)):
     # since you can't iterate through a list with invalid grid values (index and key), going to loop through possible 8 cell coordinates and add the only legitimate cells in a list with try .. except
-    if value[idx] == '_':
+    if row_items[idx] == '_':
       surrounding_cells = []
-      for i, j in [(key-1, idx-1), (key-1, idx), (key-1, idx+1), 
-                   (key, idx-1),                    (key, idx+1), 
-                   (key+1, idx-1), (key+1, idx), (key+1, idx+1)]:
+      for i, j in [(row_num-1, idx-1), (row_num-1, idx), (row_num-1, idx+1), 
+                   (row_num, idx-1),                    (row_num, idx+1), 
+                   (row_num+1, idx-1), (row_num+1, idx), (row_num+1, idx+1)]:
         try:
           if j != -1: # so that it doesn't look at the check the [-1] item when the index is 0 
             surrounding_cells.append(original_grid[i][j])
-        except (IndexError, KeyError):
+        except (IndexError, KeyError): # IndexError for when idx goes over, KeyError when the key goes outside of 0-9 
           continue
-      value[idx] = str(surrounding_cells.count('X'))
+      row_items[idx] = str(surrounding_cells.count('X'))
       
           
 print_grid(original_grid)
@@ -87,8 +87,19 @@ def uncover_tile():
       print(":(\nWhoops! Seems like you made a mistake, I'll let this one slide, but one more and you are out!\n")
     covered_grid[row_key][char_idx] = 'B'
   
-  elif original_grid[row_key][char_idx] == '_':
-    pass
+  elif original_grid[row_key][char_idx] == '0':
+    zero_cells = []
+    for i, j in [(row_key-1, char_idx-1), (row_key-1, char_idx), (row_key-1, char_idx+1), 
+                  (row_key, char_idx-1),    (row_key, char_idx),  (row_key, char_idx+1), # included row_key, char_idx
+                  (row_key+1, char_idx-1), (row_key+1, char_idx), (row_key+1, char_idx+1)]:
+      try:
+        if j != -1: # so that it doesn't look at the check the [-1] item when the index is 0
+          if original_grid[i][j] == "0":
+            zero_cells.append((i, j))
+          covered_grid[i][j] = original_grid[i][j]
+
+      except (IndexError, KeyError): # IndexError for when idx goes over, KeyError when the key goes outside of 0-9 
+        continue
   elif action == 'F':
     covered_grid[row_key][char_idx] = action
   else:
