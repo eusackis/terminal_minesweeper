@@ -5,15 +5,15 @@ import random
 columns = "ABCDEFGHIJ"
 rows = range(10)
 
-def create_grid():
-  empty_dict = {}
+def create_empty_grid():
+  empty_dict = {} # could have made maybe an list of lists, since the keys are pretty much index numbers, but no real reason to change it now
   for i in rows:
     empty_dict[i] = ['_' for j in range(10)]
   return empty_dict
   
-original_grid = create_grid()
+original_grid = create_empty_grid()
 
-def print_grid(grid):
+def print_grid(grid: dict):
   print("X", [char for char in columns])
   print("----------------------------------------------------")
   for key, value in grid.items():
@@ -24,7 +24,7 @@ def print_grid(grid):
 print_grid(original_grid)
 # The average percentage of mines on the board averages about to 0.12-0.2 %, the percentage increasing as the board gets bigger so probably for 10x10 board 13 would be ok
 
-mines = random.sample(range(100),13)
+mines = random.sample(range(100),13) # 
 # while len(mines) < 13:
   # x = random.randint(1,100)
   # if x not in mines:
@@ -40,25 +40,25 @@ for mine in mines:
 
 print_grid(original_grid)
 
-for key, value in original_grid.items():
-  for idx in range(len(value)):
+for row_num, row_items in original_grid.items():
+  for idx in range(len(row_items)):
     # since you can't iterate through a list with invalid grid values (index and key), going to loop through possible 8 cell coordinates and add the only legitimate cells in a list with try .. except
-    if value[idx] == '_':
+    if row_items[idx] == '_':
       surrounding_cells = []
-      for i, j in [(key-1, idx-1), (key-1, idx), (key-1, idx+1), 
-                   (key, idx-1),                    (key, idx+1), 
-                   (key+1, idx-1), (key+1, idx), (key+1, idx+1)]:
+      for i, j in [(row_num-1, idx-1), (row_num-1, idx), (row_num-1, idx+1), 
+                   (row_num, idx-1),                    (row_num, idx+1), 
+                   (row_num+1, idx-1), (row_num+1, idx), (row_num+1, idx+1)]:
         try:
           if j != -1: # so that it doesn't look at the check the [-1] item when the index is 0 
             surrounding_cells.append(original_grid[i][j])
-        except (IndexError, KeyError):
+        except (IndexError, KeyError): # IndexError for when idx goes over, KeyError when the key goes outside of 0-9 
           continue
-      value[idx] = str(surrounding_cells.count('X'))
+      row_items[idx] = str(surrounding_cells.count('X'))
       
           
 print_grid(original_grid)
 
-covered_grid = create_grid()
+covered_grid = create_empty_grid()
 
 print_grid(covered_grid)
 
@@ -90,7 +90,20 @@ def uncover_tile():
     if len(mistakes) == 1:
       print("\nKABLAMO! You are on your last leg. Literally!\n")
     covered_grid[row_key][char_idx] = 'B'
-    
+  
+  elif original_grid[row_key][char_idx] == '0':
+    zero_cells = []
+    for i, j in [(row_key-1, char_idx-1), (row_key-1, char_idx), (row_key-1, char_idx+1), 
+                  (row_key, char_idx-1),    (row_key, char_idx),  (row_key, char_idx+1), # included row_key, char_idx
+                  (row_key+1, char_idx-1), (row_key+1, char_idx), (row_key+1, char_idx+1)]:
+      try:
+        if j != -1: # so that it doesn't look at the check the [-1] item when the index is 0
+          if original_grid[i][j] == "0":
+            zero_cells.append((i, j))
+          covered_grid[i][j] = original_grid[i][j]
+
+      except (IndexError, KeyError): # IndexError for when idx goes over, KeyError when the key goes outside of 0-9 
+        continue
   elif action == 'F':
     covered_grid[row_key][char_idx] = action
   else:
