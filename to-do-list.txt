@@ -2,17 +2,20 @@ Terminal Minesweeper
 
 Here are going to be the notes trying to outline the things I need to code or figure out, before I build towards a functional Minesweeper game.
 
--Create a grid, possibly a grid with numbers by letters axes (for the sake keeping it simple, no modifying options yet, as far as size or the amount of mines go)
--Create a random mine generator for the grid
--Create a number generator that will create the numbers for the surrounding mines
--Create a corresponding covered grid, that will "open" the grid fields
--Create a function that will uncover or flag a selected field:
-  1) Have it take only legit coordinates
-  2) Add the ability to Uncover or flag
-  3) You can make 1 mistake (2 and you're out)
-  4) Perhaps add a logic that if all numbers are uncovered, you win and don't have to flag the last mine(s)
+1) Create a grid, possibly a grid with numbers by letters axes (for the sake keeping it simple, no modifying options yet, as far as 
+size or the amount of mines go)
+2) Create a random mine generator for the grid
+3) Create a number generator that will create the numbers for the surrounding mines
+4) Create a corresponding covered grid, that will "open" the grid fields
+5) Create a function that will uncover or flag a selected field:
+  a) Have it take only legit coordinates
+  b) Add the ability to Uncover or flag
+  c) You can make 1 mistake (2 and you're out)
+  d) Perhaps add a logic that if all numbers are uncovered, you win and don't have to flag the last mine(s)
+  e) Add a flag counter
 
--SPICY: Create a logic that when opening an empty grid field it would open all the empty fields and stop at the number.
-  1) essentially if you hit "_", you should check all fields around you and look for other "_", whilst uncovering all the number fields
-  2) would be smart (perhaps) IF the logic could remember which tiles were checked (or at least the "_" ones), so it does not loop through already uncovered fields OR not 
-  get stuck going back and forth between the "_" tiles
+6) SPICY: Create a logic that when opening an empty grid field it would open all the empty fields and stop at the number.
+  a) essentially if you hit "0", you should check all fields around you and look for other "0", whilst uncovering all the number fields
+  b) would be smart (perhaps) IF the logic could remember which tiles were checked (or at least the "0" ones), so it does not loop 
+  through already uncovered fields OR not get stuck going back and forth between the "0" tiles
+  c) Probably have to create a list of uncovered tiles, so as to not loop through them again, could be included with the point 5d
