@@ -32,7 +32,7 @@ rows = range(row_count)
 def create_empty_grid(rows, columns):
     empty_dict = {} # could have made maybe an list of lists, since the keys are pretty much index numbers, but no real reason to change it now
     for i in range(rows):
-        empty_dict[i] = ['O' for j in range(columns)]
+        empty_dict[i] = ['■' for j in range(columns)]
     return empty_dict
   
 original_grid = create_empty_grid(row_count, column_count)
@@ -107,7 +107,7 @@ numbers_on_grid = [] # list for all non-zero values on the grid to win the game
 for row_num, row_items in original_grid.items():
     for idx in range(len(row_items)):
     # since you can't iterate through a list with invalid grid values (index and key), going to loop through possible 8 cell coordinates and add the only legitimate cells in a list with try .. except
-        if row_items[idx] == 'O':
+        if row_items[idx] == '■':
             surrounding_cells = []
             for i, j in [(row_num-1, idx-1), (row_num-1, idx), (row_num-1, idx+1), 
                         (row_num, idx-1),                    (row_num, idx+1), 
