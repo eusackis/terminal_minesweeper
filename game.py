@@ -5,6 +5,7 @@ import string
 print(game_strings.intro_text,"\n-----------------------------------------------------------------------------")
 print(game_strings.description_text)
 
+
 column_count = None
 row_count = None
 
@@ -35,6 +36,7 @@ def create_empty_grid(rows, columns):
     return empty_dict
   
 original_grid = create_empty_grid(row_count, column_count)
+covered_grid = create_empty_grid(row_count, column_count)
 
 ### self-explanatory print_grid function
 def print_grid(grid: dict):
@@ -51,17 +53,51 @@ def print_grid(grid: dict):
     print("\n")
 
 
-### placing the numbers around the mines and also creating a list of all the numbered fields which need to be uncovered to finish the game
+### 
+# 1) placing the numbers around the mines; 
+# 2) creating a list of all the numbered fields which need to be uncovered to finish the game
+# 3) creating a logic that create the first uncover click would be a massive spread
 ### creating mines
+print('To play enter the tile coordinates with the column + row combo in that order, for example - B 7 U')
+print_grid(covered_grid)
+first_tile_data = []
+
+while len(first_tile_data) != 3 or first_tile_data[0] not in columns or not first_tile_data[1].isdigit() and int(first_tile_data[1]) not in rows or first_tile_data[2] not in ['U', 'F']:
+    first_click = input("Go ahead, choose your first tile (no funny business): ").upper()
+    first_tile_data = first_click.split()
+
+ft_col = columns.find(first_tile_data[0])
+ft_row = int(first_tile_data[1])
+
+safe_numbers = [] # a number list which the will be ignored when creating mine placements on the grid
+for i, j in [(ft_row-1, ft_col-1), (ft_row-1, ft_col), (ft_row-1, ft_col+1), 
+            (ft_row, ft_col-1),    (ft_row, ft_col),    (ft_row, ft_col+1), 
+            (ft_row+1, ft_col-1), (ft_row+1, ft_col), (ft_row+1, ft_col+1)]:
+    try:
+        if j != -1: # so that it doesn't look at the check the [-1] item when the index is 0 
+            check = original_grid[i][j] # this is amateur hour, I just did not want to look for a specific check, so I'm just trying to access a grid value
+            num = i * column_count + j
+            safe_numbers.append(num) 
+
+
+    except (IndexError, KeyError): # IndexError for when idx goes over, KeyError when the key goes outside of the key range 
+        continue 
+
 tile_count = row_count * column_count
 mine_count = 9
 if tile_count > 64:
     mine_count += (tile_count - 64) * 0.21
     mine_count = int(mine_count)
 
-mines = random.sample(range(tile_count),mine_count) 
+# mines = random.sample(range(tile_count),mine_count)
+mine_nums = [] 
+while len(mine_nums) < mine_count:
+    mine_num = random.randint(0, tile_count - 1)
+    if mine_num not in mine_nums + safe_numbers:
+        mine_nums.append(mine_num)
+
 ### placing the mines
-for mine in mines:
+for mine in mine_nums:
     row = mine // column_count
     idx = mine % column_count
 
@@ -88,17 +124,15 @@ for row_num, row_items in original_grid.items():
                 numbers_on_grid.append((idx, row_num)) # adding the numbered tile to a list
  
 # print_grid(original_grid)
-covered_grid = create_empty_grid(row_count, column_count)
 # print_grid(covered_grid)
 
-def uncover_tile():
+def uncover_tile(player_input):
   # global mistakes
-    player_input = input('Enter field coordinates: ').upper()
     tile_data = player_input.split()
 
     # checking if a valid entry is submitted at all, 
     # the order of conditions matters
-    while len(tile_data) != 3 or tile_data[0] not in columns or tile_data[1].isdigit() and int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F'] or (tile_data[0], int(tile_data[1])) in mistakes:
+    while len(tile_data) != 3 or tile_data[0] not in columns or not tile_data[1].isdigit() and int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F'] or (tile_data[0], int(tile_data[1])) in mistakes:
         print(tile_data)
         if (tile_data[0], int(tile_data[1])) in mistakes: # so that reentering a already detonated mine, does not result in a game over:
             print("Looks like you are trying to step on a detonated mine, one leg per one mine. Company policy.")
@@ -160,11 +194,12 @@ def uncover_tile():
 
 mistakes = []
 
-print('To play enter the tile coordinates with the column + row combo in that order, for example - B 7 U')
-print_grid(covered_grid)
+
+uncover_tile(first_click)
 while len(mistakes) < 2 and len(numbers_on_grid) != 0:
     # print_grid(original_grid)
-    uncover_tile()
+    player_input = input('Enter field coordinates: ').upper()
+    uncover_tile(player_input)
     print(f"the amount of mistakes: {len(mistakes)}")
     # print_grid(original_grid)
 
