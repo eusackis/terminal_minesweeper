@@ -47,7 +47,7 @@ def print_grid(grid: dict):
     print(hyphen_line)
     for key, value in grid.items():
         if key < 10:
-            print("0" + str(key), value)
+            print(" " + str(key), value)
         else:
             print(key, value)
     print("\n")
@@ -62,7 +62,7 @@ print('To play enter the tile coordinates with the column + row combo in that or
 print_grid(covered_grid)
 first_tile_data = []
 
-while len(first_tile_data) != 3 or first_tile_data[0] not in columns or not first_tile_data[1].isdigit() and int(first_tile_data[1]) not in rows or first_tile_data[2] not in ['U', 'F']:
+while len(first_tile_data) != 3 or first_tile_data[0] not in columns or not first_tile_data[1].isdigit() and int(first_tile_data[1]) not in rows or first_tile_data[2] != 'U':
     first_click = input("Go ahead, choose your first tile (no funny business): ").upper()
     first_tile_data = first_click.split()
 
@@ -123,7 +123,6 @@ for row_num, row_items in original_grid.items():
                 row_items[idx] = str(surrounding_cells.count('X'))
                 numbers_on_grid.append((idx, row_num)) # adding the numbered tile to a list
  
-# print_grid(original_grid)
 # print_grid(covered_grid)
 
 def uncover_tile(player_input):
@@ -134,7 +133,7 @@ def uncover_tile(player_input):
     # the order of conditions matters
     while len(tile_data) != 3 or tile_data[0] not in columns or not tile_data[1].isdigit() and int(tile_data[1]) not in rows or tile_data[2] not in ['U', 'F'] or (tile_data[0], int(tile_data[1])) in mistakes:
         print(tile_data)
-        if (tile_data[0], int(tile_data[1])) in mistakes: # so that reentering a already detonated mine, does not result in a game over:
+        if len(tile_data) == 3 or tile_data[0] in columns and tile_data[1].isdigit() and int(tile_data[1]) not in rows and (tile_data[0], int(tile_data[1])) in mistakes: # so that reentering a already detonated mine, does not result in a game over:
             print("Looks like you are trying to step on a detonated mine, one leg per one mine. Company policy.")
         else:
             print("You haven't entered a valid grid coordinate with a valid action")
@@ -147,22 +146,22 @@ def uncover_tile(player_input):
 
     checked_zero_tiles = []
 
-    def uncover_safe_tile_remove_num(x, y): #  created this because technically I reuse this sequence twice, the naming sucks, I know
-        covered_grid[x][y] = original_grid[x][y]
-        if (x, y) in numbers_on_grid:
-            numbers_on_grid.remove((x,y))
+    def uncover_safe_tile_remove_num(num, char): #  created this because technically I reuse this sequence twice, the naming sucks, I know
+        covered_grid[num][char] = original_grid[num][char]
+        if (char, num) in numbers_on_grid:
+            numbers_on_grid.remove((char, num))
 
     def mass_uncover(zero_list: list):
         unchecked_zero_tiles = []
         for item in zero_list:
-            x = item[0]
-            y = item[1]
-            covered_grid[x][y] = original_grid[x][y] # uncover the one you click first
+            num = item[0]
+            char = item[1]
+            covered_grid[num][char] = original_grid[num][char] # uncover the one you click first
             checked_zero_tiles.append(item)
 
-            for i, j in [(x-1, y-1), (x-1, y), (x-1, y+1), 
-                          (x, y-1),               (x, y+1), 
-                          (x+1, y-1), (x+1, y), (x+1, y+1)]:
+            for i, j in [(num-1, char-1), (num-1, char), (num-1, char+1), 
+                         (num, char-1),                     (num, char+1), 
+                         (num+1, char-1), (num+1, char), (num+1, char+1)]:
                 try:
                     if j != -1: # so that it doesn't look at the check the [-1] item when the index is 0
                         if original_grid[i][j] == " " and (i, j) not in checked_zero_tiles: # so it remembers all the empty tiles it needs to check and does not check the ones that are
@@ -180,13 +179,13 @@ def uncover_tile(player_input):
         mistakes.append((tile_data[0], row_key)) # changed the char_idx back to tile_data[0], for the sake of consistency, although really weighing the benefits of the letters x numbers aesthetic at this point
         if len(mistakes) == 1:
             print("\nKABLAMO! You are on your last leg. Literally!\n")
-        covered_grid[row_key][char_idx] = 'B'
+        covered_grid[row_key][char_idx] = '✹'
     
     elif original_grid[row_key][char_idx] == ' ':
         zero_cells = [(row_key, char_idx)]
         mass_uncover(zero_cells)
     elif action == 'F':
-        covered_grid[row_key][char_idx] = action
+        covered_grid[row_key][char_idx] = "⛿"
     else:
         uncover_safe_tile_remove_num(row_key, char_idx)
 
@@ -200,7 +199,7 @@ while len(mistakes) < 2 and len(numbers_on_grid) != 0:
     # print_grid(original_grid)
     player_input = input('Enter field coordinates: ').upper()
     uncover_tile(player_input)
-    print(f"the amount of mistakes: {len(mistakes)}")
+    print(f"Mistakes: {len(mistakes)}")
     # print_grid(original_grid)
 
 if len(mistakes) == 2:
