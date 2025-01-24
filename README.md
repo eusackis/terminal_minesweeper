@@ -4,7 +4,7 @@
 This is pretty straight-forward. It is a minesweeper game I made which you can play in a CLI. Or at least should be.
 This was part of the codecademy 'Computer Science' course as a first portfolio project - creating a game to play in the terminal.
 Some of the suggested options were tic-tac-toe, "Who Wants To Be a Millionaire?", Tarot cards, but I went with Minesweeper, because
-it seemed like the most interesting option and probably challenging of all of them. 
+it seemed like the most interesting option and probably the most challenging out of all of them. 
 
 The courses is based on learning the concepts of CS with Python, so the whole game is written in Python.
 
